@@ -1,0 +1,61 @@
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+
+% Chapter and title styles
+\usepackage{titlesec}
+\titleformat{\chapter}
+	{\normalfont\sffamily\Huge\bfseries}
+	{\thechapter}{1em}{}
+\titleformat{\section}
+  {\normalfont\sffamily\Large\bfseries}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\sffamily\large\bfseries}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalfont\sffamily\large\bfseries}
+  {}{1em}{}
+
+% Setup lstings
+\definecolor{codecomment}{rgb}{0.54,0.25,0.27}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codestring}{rgb}{0.0, 0.5, 0.0}
+\definecolor{backcolour}{rgb}{0.8,0.9,1}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},
+	commentstyle=\color{codecomment},
+	keywordstyle=\color{blue},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codestring},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=fals,
+	tabsize=2
+}
+
+
+\lstset{style=mystyle}
+
+% Defbox declaration
+\definecolor{shadecolor}{RGB}{229,255,204}
+\newcommand{\defbox}[1]{\noindent\colorbox{shadecolor}{
+	\parbox{\dimexpr\textwidth-2\fboxsep\relax}{#1}}}
+	
+% Yellow box
+\definecolor{lightyellow}{RGB}{255,255,204}
+\newcommand{\examplebox}[1]{\noindent\colorbox{lightyellow}{
+	\parbox{\dimexpr\textwidth-2\fboxsep\relax}{#1}}}
+	

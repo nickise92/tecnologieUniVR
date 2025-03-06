@@ -1,0 +1,104 @@
+\documentclass[11pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\graphicspath{ {./img/} }
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{multicol}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{amsthm}
+\usepackage{geometry}
+\geometry{
+	a4paper, 
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm
+}
+
+% Template
+\usepackage{noteTemplate}
+\usepackage{titlepage}
+
+
+\begin{document}
+\customtitlepage
+\newpage
+\tableofcontents
+
+\chapter{Transizioni}
+
+\section{DBMS - Data Base Management System}
+
+Un DBMS \`e un sistema software di gestione di basi di dati. Il sistema deve gestire collezioni di dati:
+\begin{itemize}
+\item \textbf{Grandi}: non possono essere caricati in memoria centrale (RAM).
+\item \textbf{Condivise}: ai dati possono accedere diversi programmi \textbf{contemporaneamente}.
+\item \textbf{Persistenti}: devono rimanere anche quando terminano i programmi e, in caso di guasti, dovranno esserci dei sistemi per ripristinare la situazione antecedente al guasto.
+\end{itemize}
+Un DBMS deve anche assicurare l'\textbf{affidabilit\`a}, sempre inerente alla gestione dei guasti, e la \textbf{privatezza}, ovvero assicurare che accessi, scritture e letture avvengano secondo schemi definiti.
+
+Un DBMS, inoltre, deve dare accesso ai dati in modo \emph{efficace} ed \emph{efficiente}. Queste caratteristiche dipendono dal modo in cui vengono strutturate le basi di dati. 
+
+Un DBMS condivide con il sistema operativo alcune funzionalit\`a, estendendo quelle del file system. Infatti, il DataBase Management System si basa sulla struttura dle file system per memorizzare i dati grezzi, aggiungendo delle strutture interne per facilitare la ricerca dei dati.
+
+\subsection{Architettura a tre livelli}
+
+Un DBMS \`e rappresentato con un'architettura a tre livelli:
+\begin{center}
+\begin{tikzpicture}
+\draw (-2,10.5) rectangle (2,9.5);
+\node at (0,10) {LIVELLO LOGICO};
+\node at (2,10) [right] {\color{blue}\emph{modello relazionale}};
+\draw[->] (0,9.5) -- (0,7);
+\node at (0,8.25) [right] {\color{red}\emph{indipendenza fisica}};
+\draw (-2, 7) rectangle (2,6);
+\node at (0,6.5) {LIVELLO INTERNO};
+\node at (2,6.5) [right] {\color{blue}\emph{strutture fisiche}};
+\draw[->] (-2,10) -- (-6,10);
+\node at (-4, 10) [above] {\color{red}\emph{indipendenza logica}};
+\draw (-10,10.5) rectangle (-6, 9.5);
+\node at (-8,10) {LIVELLO ESTERNO};
+\node at (-10, 10) [left] {\color{blue}\emph{viste}}; 
+\end{tikzpicture}
+\end{center}
+
+\defbox{\par{R-DBMS}
+Si tratta di DBMS basati sul modello relazionale, e vengono definiti \textbf{sistemi transazionali}.}
+
+\section{Transazione}
+
+\defbox{\par{Transazione} \`e una unit\`a indivisibile di lavoro. Una transazione va a buon fine, oppure non ha alcun effetto. Non sono ammesse esecuzioni parziali di una transazione.}
+
+Una transazione \`e una sorta di programma che segue il seguente schema:
+\begin{lstlisting}{language=sql}
+BEGIN TRANSACTION
+	<PROGRAMMA>
+END TRANSACTION
+\end{lstlisting}
+Il programma \`e della forma { [ISTRUZIONE] | [COMMIT WORK] | [ROLLBACK WORK] }.
+\newpage
+\examplebox{\emph{\textbf{Esempio}: passaggio di 100.00€ tra due conti correnti}}
+\begin{lstlisting}{language=SQL}
+BEGIN TRANSACTION
+	// istruzione 1
+	UPDATE conto SET saldo = saldo - 100
+		WHERE conto = `15';
+	// istruzione 2
+	UPDATE conto SET saldo = saldo + 100
+		WHERE conto = `18';
+	
+	// commit
+	COMMIT WORK;
+END TRANSACTION
+\end{lstlisting}
+Il fatto di aver inserito all'interno di un'unica transazione le due istruzioni far\`a si che, in caso di problemi, le istruzioni vengano eseguite entrambe oppure nessuna delle due.
+
+
+
+\end{document}
