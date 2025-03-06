@@ -94,6 +94,146 @@ END TRANSACTION
 \end{lstlisting}
 Il fatto di aver inserito all'interno di un'unica transazione le due istruzioni far\`a si che, in caso di problemi, le istruzioni vengano eseguite entrambe oppure nessuna delle due.
 
+\section{Propriet\`a ACID}
+
+Il DBMS garantisce quattro pripriet\`a dette \emph{propriet\`a acide} dall'acronimo inglese ACID. Queste propriet\`a sono \textbf{A}tomicity, \textbf{C}onsistency, \textbf{I}solation e \textbf{D}urability\footnote{Si traduce in persistenza}.
+
+\subsection{Atomicity (atomicit\`a)}
+
+Una transazione \`e una unit\`a di lavoro indivisibile, ovvero o vengono eseguite tutte le istruzioni che compongono la transazione, oppure non ne viene eseguita nessuna. Se durante la transazione dell'esempio precedente si interrompe dopo aver tolto i 100 euro dal primo conto, il DBMS deve riportare quel conto al valore che aveva precedentemente.
+
+\subsection{Consistency (consistenza)}
+
+L'esecuzione di una transazione deve rispettare i vincoli di integrità. Il DBMS andarà a verificare in due modi che i vincoli vengano rispettati:
+\begin{itemize}
+\item \textbf{Verifica immediata}: si ha quando il DBMS verifica la consistenza dei vincoli durante l'esecuzione della transazione. Questo da la possibilit\`a di reagire.
+\item \textbf{Verifica differita}: in questo caso il controllo viene fatto al momento del commit. Questo non da la possibilit\`a di reagire alla transazione perch\'e il sistema annulla la transazione.
+\end{itemize}
+
+\subsection{Isolation (isolamento)}
+
+L'esecuzione di ogni transazione \`e indipendente dall'esecuzione contemporanea di altre transazioni. Servono dei sistemi di gestione della concorrenza e, nel caso in cui una transazione subisca un rollback, non deve causare un rollback a catena di altre transazioni.
+
+\subsection{Durability (persistenza)}
+
+Gli effetti devono permanere anche dopo il completamento della transazione.
+
+\section{DBMS}
+
+Il DBMS quindi \`e composto da dei moduli software che permettono di garantire le propriet\`a ACID delle transizioni.
+\begin{center}
+\begin{tikzpicture}
+% Transazione t_i
+\draw (0,14) ellipse (1.5cm and 1cm);
+\node at (0,14) {Transazione $t_i$};
+\draw[thick] (1.5, 14.1) -- (2.5, 14.1);
+\draw[thick] (1.5, 13.9) -- (2.5, 13.9);
+\draw[thick] (1.5, 14.1) -- (1.5, 13.9);
+\draw[thick] (2.5, 14.1) -- (2.5, 14.3);
+\draw[thick] (2.5, 13.9) -- (2.5, 13.7);
+\draw[thick] (2.5, 14.3) -- (3, 14);
+\draw[thick] (2.5, 13.7) -- (3, 14);
+\node at (2.1, 14.2) [above][magenta] {SQL};
+
+% DBMS 
+\draw (3,1) rectangle (15,15);
+\node at (14.2, 15) [below] {\textbf{DBMS}};
+
+% Gestore delle interrogazioni
+\draw (3.5, 13) rectangle (14.5, 14.5);
+\node at (9, 14) {Gestore delle interrogazioni};
+\node at (9, 13.5) {\emph{(ottimizzatore delle interrogazioni)}};
+% Transizione al gestore dei metodi di accesso
+\draw[->][thick] (7,13) -- (7, 10);
+\node at (7, 10.5) [above left][magenta] {\small\emph{piano di esecuzione}};
+% Gestore dei metodi di accesso
+\node at (7, 10.15) [right][blue]{\small CONSISTENZA};
+\draw (3.5, 8.5) rectangle (10,10);
+\node at (6.75, 9.25) {Gestore dei metodi di accesso};
+% Transizione al gestore della concorrenza
+\draw[<->][thick] (10,10) -- (11,10.5);
+\node at (10.5, 10.12) [right][magenta] {\small\emph{richiede l'accesso}};
+% Gestore della concorrenza
+\draw (11,10.5) rectangle (14.5, 12);
+\node at (12.75, 11.5) {Gestore della};
+\node at (12.75, 11) {concorrenza};
+\node at (11, 12.15) [right][blue] {\small ISOLAMENTO};
+\node at (11, 12.5) [right][blue]{\small ATOMICIT\`A};
+% Transizione al gestore dell'affidabilita'
+\draw[<->][thick] (10,8.5) -- (11, 8);
+\node at (10.5, 8.25) [below left][magenta] {\small\emph{log}};
+% Gestore dell'affidabilita'
+\draw (11, 8) rectangle (14.5, 6.5);
+\node at (12.75, 7.5) {Gestore};
+\node at (12.75, 7) {dell'affidabilit\`a};
+\node at (11, 8.15) [right][blue] {\small PERSISTENZA};
+\node at (11, 8.5) [right][blue] {\small ATOMICIT\`A};
+% Transizione al gestore del buffer
+\draw[->][thick] (7,8.5) -- (7, 6);
+\node at (7, 7.5) [above left][magenta]{\small\emph{pagine$^1$ di memoria }};
+\node at (7, 7.4) [left][magenta]{\small\emph{secondaria che devono }};
+\node at (7, 7) [left][magenta]{\small\emph{essere caricate}};
+% Gestore del buffer
+\draw (3.5,4.5) rectangle (10, 6);
+\node at (7, 5.25) {Gestore del buffer};
+% Transizione al gestore dell'affidabilita'
+\draw[<->][thick] (10,6) -- (11,6.5);
+% Transizione al gestore della memoria secondaria
+\draw[->][thick] (7, 4.5) -- (7, 3);
+\node at (7, 3.75) [left][magenta]{\small\emph{caricamento}};
+% Gestore della memoria secondaria
+\draw (3.5, 1.5) rectangle (14.5, 3);
+\node at (9,2.25) {Gestore della memoria secondaria};
+% Transizione alla memoria secondaria
+\draw (-0.5,3) ellipse (1cm and 0.4cm);
+\draw (-0.5,1) ellipse (1cm and 0.4cm);
+\draw (0.5,3) -- (0.5,1);
+\draw (-1.5, 3) -- (-1.5, 1);
+\node at (1, 3) [above right][magenta] {\small MEMORIA};
+\node at (1.75, 2.85) [magenta] {\small SECONDARIA};
+\draw[thick] (3,2.35) -- (3,2.15);
+\draw[thick] (3,2.35) -- (1, 2.35);
+\draw[thick] (3,2.15) -- (1,2.15); 
+\draw[thick] (1, 2.15) -- (1, 1.95);
+\draw[thick] (1,2.35) -- (1,2.55);
+\draw[thick] (1, 2.55) -- (0.5, 2.25);
+\draw[thick] (1,1.95) -- (0.5, 2.25);
+% Note
+\node at (3, 1) [below right][magenta] {\tiny $^1$Oppure blocchi};
+\end{tikzpicture}
+\end{center}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 \end{document}
