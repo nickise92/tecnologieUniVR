@@ -4,14 +4,10 @@
 \usepackage[italian]{babel}
 \usepackage{graphicx}
 \graphicspath{ {./img/} }
-\usepackage{amsmath}
-\usepackage{amssymb}
 \usepackage{tabularx}
 \usepackage{titlesec}
 \usepackage{multicol}
-\usepackage{listings}
 \usepackage{tikz}
-\usepackage{amsthm}
 \usepackage{geometry}
 \geometry{
 	a4paper, 
@@ -24,7 +20,6 @@
 % Template
 \usepackage{noteTemplate}
 \usepackage{titlepage}
-
 
 \begin{document}
 \customtitlepage
@@ -76,7 +71,7 @@ Si tratta di DBMS basati sul modello relazionale, e vengono definiti \textbf{sis
 \defbox{\par{Transazione} \`e una unit\`a indivisibile di lavoro. Una transazione va a buon fine, oppure non ha alcun effetto. Non sono ammesse esecuzioni parziali di una transazione.}
 
 Una transazione \`e una sorta di programma che segue il seguente schema:
-\begin{lstlisting}{language=sql}
+\begin{lstlisting}
 BEGIN TRANSACTION
 	<PROGRAMMA>
 END TRANSACTION
@@ -84,14 +79,14 @@ END TRANSACTION
 Il programma \`e della forma { [ISTRUZIONE] | [COMMIT WORK] | [ROLLBACK WORK] }.
 \newpage
 \examplebox{\emph{\textbf{Esempio}: passaggio di 100.00€ tra due conti correnti}}
-\begin{lstlisting}{language=SQL}
+\begin{lstlisting}
 BEGIN TRANSACTION
 	// istruzione 1
 	UPDATE conto SET saldo = saldo - 100
-		WHERE conto = `15';
+		WHERE conto = '15';
 	// istruzione 2
 	UPDATE conto SET saldo = saldo + 100
-		WHERE conto = `18';
+		WHERE conto = '18';
 	
 	// commit
 	COMMIT WORK;

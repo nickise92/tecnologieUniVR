@@ -2,6 +2,7 @@
 \usepackage{listings}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 
@@ -22,32 +23,51 @@
   {}{1em}{}
 
 % Setup lstings
-\definecolor{codecomment}{rgb}{0.54,0.25,0.27}
+\definecolor{codecomment}{rgb}{0.44,0.50,0.56}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codestring}{rgb}{0.0, 0.5, 0.0}
-\definecolor{backcolour}{rgb}{0.8,0.9,1}
+\definecolor{codestring}{HTML}{660033}
+\definecolor{backcolour}{rgb}{0.94,0.96,0.99}
+\definecolor{keywordcolor}{rgb}{0,0.46,0.66}
+\definecolor{typecolor}{rgb}{0.8,0,0.4}
 
-\lstdefinestyle{mystyle}{
+
+% setting language SQL
+\lstdefinelanguage{SQL}{
+	morekeywords = [1]{BEGIN, END, TRANSACTION, UPDATE, SET, WHERE, COMMIT, WORK, CREATE, TABLE, DELETE, ALTER, FROM, DROP, ADD, COLUMN, REFERENCES, FOREIGN, KEY, UNIQUE, VARYING, PRIMARY, KEY, AS, VALUE, CHECK, NOT, WITH, DOMAIN, DEFAULT},
+	morekeywords = [2]{NULL, CHARACTER, TEXT, BOOLEAN, SMALLINT, INTEGER, NUMERIC, DECIMAL, REAL, DOUBLE, PRECISION, DATE, TIME, TIMESTAMP, VARCHAR, CHAR}, 
+	keywordstyle = [1]\color{keywordcolor},
+	keywordstyle = [2]\color{typecolor},
+	sensitive = false, 
+	morecomment = [l]{//},
+	commentstyle = \color{codecomment},
+	morestring = [b]',
+	stringstyle = \color{codestring}
+}
+
+
+\lstset{
+	language={SQL},
 	backgroundcolor=\color{backcolour},
-	commentstyle=\color{codecomment},
-	keywordstyle=\color{blue},
-	numberstyle=\tiny\color{codegray},
-	stringstyle=\color{codestring},
-	basicstyle=\ttfamily\footnotesize,
+	basicstyle={\sffamily\normalsize},
+	identifierstyle={\sffamily\normalsize},
+	commentstyle={\color{codecomment}\normalsize\itshape},
+	keywordstyle={\color{keywordcolor}\sffamily\bfseries\normalsize},
+	ndkeywordstyle={\color{typecolor}\normalsize\sffamily},
+	stringstyle={\color{codestring}\normalsize\ttfamily},
 	breakatwhitespace=false,
 	breaklines=true,
 	captionpos=b,
 	keepspaces=true,
 	numbers=left,
+	stepnumber=1,
 	numbersep=5pt,
+	xleftmargin=3pt,
+	lineskip=0.25ex,
 	showspaces=false,
 	showstringspaces=false,
-	showtabs=fals,
+	showtabs=false,
 	tabsize=2
 }
-
-
-\lstset{style=mystyle}
 
 % Defbox declaration
 \definecolor{shadecolor}{RGB}{229,255,204}
