@@ -1,0 +1,44 @@
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\ProvidesPackage{titlepage}
+
+\newcommand{\customtitlepage}{
+
+% === EDIT THIS PART === 
+\newcommand{\CourseTitle}{Tecnologie per le basi di dati}
+\newcommand{\SubTitle}{- II Semestre -}
+\newcommand{\Author}{Nick}
+\newcommand{\Prof}{S. Migliorini}
+% === STOP EDIT ===
+
+\begin{titlepage}
+\centering
+\sffamily
+Universit\`a degli Studi di Verona
+\par\vspace{0.5cm}
+\
+Dipartimento di Informatica \\
+A.A. 2024 - 2025
+\par\vspace{3.5cm}
+\textbf{\Huge{\CourseTitle}}
+\par\vspace{6cm}
+
+\footnotesize
+ Corso tenuto da \\
+\normalsize
+\textsc{\Prof} 
+\par\vspace{3cm}
+
+\footnotesize
+Appunti a cura di \\
+\normalsize
+\textsc{\Author}
+\par\vspace{1cm}
+
+
+\vfill
+\footnotesize
+Made with \LaTeX \\
+
+\end{titlepage}
+}

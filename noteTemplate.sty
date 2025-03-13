@@ -1,0 +1,81 @@
+
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+
+% Chapter and title styles
+\usepackage{titlesec}
+\titleformat{\chapter}
+	{\normalfont\sffamily\Huge\bfseries}
+	{\thechapter}{1em}{}
+\titleformat{\section}
+  {\normalfont\sffamily\Large\bfseries}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\sffamily\large\bfseries}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalfont\sffamily\large\bfseries}
+  {}{1em}{}
+
+% Setup lstings
+\definecolor{codecomment}{rgb}{0.44,0.50,0.56}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codestring}{HTML}{660033}
+\definecolor{backcolour}{rgb}{0.94,0.96,0.99}
+\definecolor{keywordcolor}{rgb}{0,0.46,0.66}
+\definecolor{typecolor}{rgb}{0.8,0,0.4}
+
+
+% setting language SQL
+\lstdefinelanguage{SQL}{
+	morekeywords = [1]{BEGIN, END, TRANSACTION, UPDATE, SET, WHERE, COMMIT, WORK, CREATE, TABLE, DELETE, ALTER, FROM, DROP, ADD, COLUMN, REFERENCES, FOREIGN, KEY, UNIQUE, VARYING, PRIMARY, KEY, AS, VALUE, CHECK, NOT, WITH, DOMAIN, DEFAULT},
+	morekeywords = [2]{NULL, CHARACTER, TEXT, BOOLEAN, SMALLINT, INTEGER, NUMERIC, DECIMAL, REAL, DOUBLE, PRECISION, DATE, TIME, TIMESTAMP, VARCHAR, CHAR}, 
+	keywordstyle = [1]\color{keywordcolor},
+	keywordstyle = [2]\color{typecolor},
+	sensitive = false, 
+	morecomment = [l]{//},
+	commentstyle = \color{codecomment},
+	morestring = [b]',
+	stringstyle = \color{codestring}
+}
+
+
+\lstset{
+	language={SQL},
+	backgroundcolor=\color{backcolour},
+	basicstyle={\sffamily\normalsize},
+	identifierstyle={\sffamily\normalsize},
+	commentstyle={\color{codecomment}\normalsize\itshape},
+	keywordstyle={\color{keywordcolor}\sffamily\bfseries\normalsize},
+	ndkeywordstyle={\color{typecolor}\normalsize\sffamily},
+	stringstyle={\color{codestring}\normalsize\ttfamily},
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	stepnumber=1,
+	numbersep=5pt,
+	xleftmargin=3pt,
+	lineskip=0.25ex,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2
+}
+
+% Defbox declaration
+\definecolor{shadecolor}{RGB}{229,255,204}
+\newcommand{\defbox}[1]{\noindent\colorbox{shadecolor}{
+	\parbox{\dimexpr\textwidth-2\fboxsep\relax}{#1}}}
+	
+% Yellow box
+\definecolor{lightyellow}{RGB}{255,255,204}
+\newcommand{\examplebox}[1]{\noindent\colorbox{lightyellow}{
+	\parbox{\dimexpr\textwidth-2\fboxsep\relax}{#1}}}
+	

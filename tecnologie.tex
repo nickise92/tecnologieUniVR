@@ -1,0 +1,444 @@
+\documentclass[11pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\graphicspath{ {./img/} }
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{multicol}
+\usepackage{tikz}
+\usepackage{geometry}
+\geometry{
+	a4paper, 
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm
+}
+
+% Template
+\usepackage{noteTemplate}
+\usepackage{titlepage}
+
+\begin{document}
+\customtitlepage
+\newpage
+\tableofcontents
+
+\chapter{Transizioni}
+
+\section{DBMS - Data Base Management System}
+
+Un DBMS \`e un sistema software di gestione di basi di dati. Il sistema deve gestire collezioni di dati:
+\begin{itemize}
+\item \textbf{Grandi}: non possono essere caricati in memoria centrale (RAM).
+\item \textbf{Condivise}: ai dati possono accedere diversi programmi \textbf{contemporaneamente}.
+\item \textbf{Persistenti}: devono rimanere anche quando terminano i programmi e, in caso di guasti, dovranno esserci dei sistemi per ripristinare la situazione antecedente al guasto.
+\end{itemize}
+Un DBMS deve anche assicurare l'\textbf{affidabilit\`a}, sempre inerente alla gestione dei guasti, e la \textbf{privatezza}, ovvero assicurare che accessi, scritture e letture avvengano secondo schemi definiti.
+
+Un DBMS, inoltre, deve dare accesso ai dati in modo \emph{efficace} ed \emph{efficiente}. Queste caratteristiche dipendono dal modo in cui vengono strutturate le basi di dati. 
+
+Un DBMS condivide con il sistema operativo alcune funzionalit\`a, estendendo quelle del file system. Infatti, il DataBase Management System si basa sulla struttura dle file system per memorizzare i dati grezzi, aggiungendo delle strutture interne per facilitare la ricerca dei dati.
+
+\subsection{Architettura a tre livelli}
+
+Un DBMS \`e rappresentato con un'architettura a tre livelli:
+\begin{center}
+\begin{tikzpicture}
+\draw (-2,10.5) rectangle (2,9.5);
+\node at (0,10) {LIVELLO LOGICO};
+\node at (2,10) [right] {\color{blue}\emph{modello relazionale}};
+\draw[->] (0,9.5) -- (0,7);
+\node at (0,8.25) [right] {\color{red}\emph{indipendenza fisica}};
+\draw (-2, 7) rectangle (2,6);
+\node at (0,6.5) {LIVELLO INTERNO};
+\node at (2,6.5) [right] {\color{blue}\emph{strutture fisiche}};
+\draw[->] (-2,10) -- (-6,10);
+\node at (-4, 10) [above] {\color{red}\emph{indipendenza logica}};
+\draw (-10,10.5) rectangle (-6, 9.5);
+\node at (-8,10) {LIVELLO ESTERNO};
+\node at (-10, 10) [left] {\color{blue}\emph{viste}}; 
+\end{tikzpicture}
+\end{center}
+
+\defbox{\par{R-DBMS}
+Si tratta di DBMS basati sul modello relazionale, e vengono definiti \textbf{sistemi transazionali}.}
+
+\section{Transazione}
+
+\defbox{\par{Transazione} \`e una unit\`a indivisibile di lavoro. Una transazione va a buon fine, oppure non ha alcun effetto. Non sono ammesse esecuzioni parziali di una transazione.}
+
+Una transazione \`e una sorta di programma che segue il seguente schema:
+\begin{lstlisting}
+BEGIN TRANSACTION
+	<PROGRAMMA>
+END TRANSACTION
+\end{lstlisting}
+Il programma \`e della forma { [ISTRUZIONE] | [COMMIT WORK] | [ROLLBACK WORK] }.
+\newpage
+\examplebox{\emph{\textbf{Esempio}: passaggio di 100.00€ tra due conti correnti}}
+\begin{lstlisting}
+BEGIN TRANSACTION
+	// istruzione 1
+	UPDATE conto SET saldo = saldo - 100
+		WHERE conto = '15';
+	// istruzione 2
+	UPDATE conto SET saldo = saldo + 100
+		WHERE conto = '18';
+	
+	// commit
+	COMMIT WORK;
+END TRANSACTION
+\end{lstlisting}
+Il fatto di aver inserito all'interno di un'unica transazione le due istruzioni far\`a si che, in caso di problemi, le istruzioni vengano eseguite entrambe oppure nessuna delle due.
+
+\section{Propriet\`a ACID}
+
+Il DBMS garantisce quattro pripriet\`a dette \emph{propriet\`a acide} dall'acronimo inglese ACID. Queste propriet\`a sono \textbf{A}tomicity, \textbf{C}onsistency, \textbf{I}solation e \textbf{D}urability\footnote{Si traduce in persistenza}.
+
+\subsection{Atomicity (atomicit\`a)}
+
+Una transazione \`e una unit\`a di lavoro indivisibile, ovvero o vengono eseguite tutte le istruzioni che compongono la transazione, oppure non ne viene eseguita nessuna. Se durante la transazione dell'esempio precedente si interrompe dopo aver tolto i 100 euro dal primo conto, il DBMS deve riportare quel conto al valore che aveva precedentemente.
+
+\subsection{Consistency (consistenza)}
+
+L'esecuzione di una transazione deve rispettare i vincoli di integrità. Il DBMS andarà a verificare in due modi che i vincoli vengano rispettati:
+\begin{itemize}
+\item \textbf{Verifica immediata}: si ha quando il DBMS verifica la consistenza dei vincoli durante l'esecuzione della transazione. Questo da la possibilit\`a di reagire.
+\item \textbf{Verifica differita}: in questo caso il controllo viene fatto al momento del commit. Questo non da la possibilit\`a di reagire alla transazione perch\'e il sistema annulla la transazione.
+\end{itemize}
+
+\subsection{Isolation (isolamento)}
+
+L'esecuzione di ogni transazione \`e indipendente dall'esecuzione contemporanea di altre transazioni. Servono dei sistemi di gestione della concorrenza e, nel caso in cui una transazione subisca un rollback, non deve causare un rollback a catena di altre transazioni.
+
+\subsection{Durability (persistenza)}
+
+Gli effetti devono permanere anche dopo il completamento della transazione.
+
+\section{DBMS}
+
+Il DBMS quindi \`e composto da dei moduli software che permettono di garantire le propriet\`a ACID delle transizioni.
+\begin{center}
+\begin{tikzpicture}
+% Transazione t_i
+\draw (0,14) ellipse (1.5cm and 1cm);
+\node at (0,14) {Transazione $t_i$};
+\draw[thick] (1.5, 14.1) -- (2.5, 14.1);
+\draw[thick] (1.5, 13.9) -- (2.5, 13.9);
+\draw[thick] (1.5, 14.1) -- (1.5, 13.9);
+\draw[thick] (2.5, 14.1) -- (2.5, 14.3);
+\draw[thick] (2.5, 13.9) -- (2.5, 13.7);
+\draw[thick] (2.5, 14.3) -- (3, 14);
+\draw[thick] (2.5, 13.7) -- (3, 14);
+\node at (2.1, 14.2) [above][magenta] {SQL};
+
+% DBMS 
+\draw (3,1) rectangle (15,15);
+\node at (14.2, 15) [below] {\textbf{DBMS}};
+
+% Gestore delle interrogazioni
+\draw (3.5, 13) rectangle (14.5, 14.5);
+\node at (9, 14) {Gestore delle interrogazioni};
+\node at (9, 13.5) {\emph{(ottimizzatore delle interrogazioni)}};
+% Transizione al gestore dei metodi di accesso
+\draw[->][thick] (7,13) -- (7, 10);
+\node at (7, 10.5) [above left][magenta] {\small\emph{piano di esecuzione}};
+% Gestore dei metodi di accesso
+\node at (7, 10.15) [right][blue]{\small CONSISTENZA};
+\draw (3.5, 8.5) rectangle (10,10);
+\node at (6.75, 9.25) {Gestore dei metodi di accesso};
+% Transizione al gestore della concorrenza
+\draw[<->][thick] (10,10) -- (11,10.5);
+\node at (10.5, 10.12) [right][magenta] {\small\emph{richiede l'accesso}};
+% Gestore della concorrenza
+\draw (11,10.5) rectangle (14.5, 12);
+\node at (12.75, 11.5) {Gestore della};
+\node at (12.75, 11) {concorrenza};
+\node at (11, 12.15) [right][blue] {\small ISOLAMENTO};
+\node at (11, 12.5) [right][blue]{\small ATOMICIT\`A};
+% Transizione al gestore dell'affidabilita'
+\draw[<->][thick] (10,8.5) -- (11, 8);
+\node at (10.5, 8.25) [below left][magenta] {\small\emph{log}};
+% Gestore dell'affidabilita'
+\draw (11, 8) rectangle (14.5, 6.5);
+\node at (12.75, 7.5) {Gestore};
+\node at (12.75, 7) {dell'affidabilit\`a};
+\node at (11, 8.15) [right][blue] {\small PERSISTENZA};
+\node at (11, 8.5) [right][blue] {\small ATOMICIT\`A};
+% Transizione al gestore del buffer
+\draw[->][thick] (7,8.5) -- (7, 6);
+\node at (7, 7.5) [above left][magenta]{\small\emph{pagine$^1$ di memoria }};
+\node at (7, 7.4) [left][magenta]{\small\emph{secondaria che devono }};
+\node at (7, 7) [left][magenta]{\small\emph{essere caricate}};
+% Gestore del buffer
+\draw (3.5,4.5) rectangle (10, 6);
+\node at (7, 5.25) {Gestore del buffer};
+% Transizione al gestore dell'affidabilita'
+\draw[<->][thick] (10,6) -- (11,6.5);
+% Transizione al gestore della memoria secondaria
+\draw[->][thick] (7, 4.5) -- (7, 3);
+\node at (7, 3.75) [left][magenta]{\small\emph{caricamento}};
+% Gestore della memoria secondaria
+\draw (3.5, 1.5) rectangle (14.5, 3);
+\node at (9,2.25) {Gestore della memoria secondaria};
+% Transizione alla memoria secondaria
+\draw (-0.5,3) ellipse (1cm and 0.4cm);
+\draw (-0.5,1) ellipse (1cm and 0.4cm);
+\draw (0.5,3) -- (0.5,1);
+\draw (-1.5, 3) -- (-1.5, 1);
+\node at (1, 3) [above right][magenta] {\small MEMORIA};
+\node at (1.75, 2.85) [magenta] {\small SECONDARIA};
+\draw[thick] (3,2.35) -- (3,2.15);
+\draw[thick] (3,2.35) -- (1, 2.35);
+\draw[thick] (3,2.15) -- (1,2.15); 
+\draw[thick] (1, 2.15) -- (1, 1.95);
+\draw[thick] (1,2.35) -- (1,2.55);
+\draw[thick] (1, 2.55) -- (0.5, 2.25);
+\draw[thick] (1,1.95) -- (0.5, 2.25);
+% Note
+\node at (3, 1) [below right][magenta] {\tiny $^1$Oppure blocchi};
+\end{tikzpicture}
+\end{center}
+
+\section{Gestore della memoria secondaria}
+
+Sul gestore della memoria secondaria ricordiamo solo due concetti chiave:
+\begin{enumerate}
+\item Il contenuto della base di dati risiede in memoria secondaria, questo per soddisfare il fatto che le basi di dati sono \textbf{grandi} e \textbf{persistenti}.
+\item Caratteristiche della memoria secondaria:
+	\begin{itemize}
+		\item Non \`e direttamente usabile dai programmi. I dati vanno caricati in memoria centrale, che ha delle dimensioni molto inferiori.
+		\item I dati sono organizzati in blocchi (pagine). Le uniche operazioni sono \textbf{lettura} e \textbf{scrittura} di un \emph{intero blocco}.
+		\item Il costo delle operazioni lettura/scrittura da/verso la memoria secondaria \`e di ordini di grandezza superiore al costo di accesso alla memoria centrale.
+	\end{itemize}
+\end{enumerate}
+
+\section{Gestore del buffer}
+Il gestore del buffer si occupa dell'interazione tra la memoria centrale e la memoria secondaria, ovvero del trasferimento di pagine (o blocchi).
+
+Il buffer \`e condiviso tra le applicazioni ed \`e organizzato in pagine. Generalmente una pagina del buffer \`e un multiplo di un blocco, noi consideriamo 1 pagina = 1 blocco.
+
+Il buffer ottimizza le letture e le scritture. Ha il compito di mantenere i dati in memoria e di differire le scritture.
+
+\subsection{Lettura di un blocco}
+
+Per la lettura di un blocco si deve verificare se il blocco \`e gi\`a presente in memoria centrale; in questo caso il gestore del buffer restituisce un \textbf{puntatore} alla pagina del buffer.
+Altrimenti, il gestore \emph{cerca} una pagina libera e carica il blocco nel buffer, restituendo poi il puntatore alla pagina del buffer.
+
+\subsection{Scrittura di un blocco}
+La scrittura di un blocco pu\`o essere differita dal gestore del buffer, in questo caso le modifiche vengono registrate solo in memoria centrale. L'obiettivo \`e quello di \textbf{ridurre il numero di accessi} alla memoria secondaria.
+
+\subsection{Principio di localit\`a}
+
+Il principio di localit\`a dice che i dati referenziati di recente hanno una maggiore probabilit\`a di essere referenziati nuovamente, quindi i dati appena caricati in memoria vengono mantenuti.
+
+\defbox{\textbf{Legge empirica}: il 20\% dei dati \`e acceduto dall'80\% delle applicazioni. Infatti, la quantit\`a di dati acceduti \`e molto minore ai dati possibili.}
+
+\subsection{Buffer}
+
+Il \textbf{buffer} \`e organizzato come una matrice, in cui ogni cella rappresenta una pagina della memoria centrale.
+\begin{multicols}{2}
+\begin{center}
+\begin{tikzpicture}
+% Matrice
+\draw (0,0) rectangle (4,5);
+\draw (1,0) -- (1,5);
+\draw (2,0) -- (2,5);
+\draw (3,0) -- (3,5);
+\draw (4,0) -- (4,5);
+\draw (0,1) -- (4,1);
+\draw (0,2) -- (4,2);
+\draw (0,3) -- (4,3);
+\draw (0,4) -- (4,4);
+% pagine
+\node at (0.5, 4.5) {$B_{i,j}$};
+\node at (1.5, 4.5) {$L$};
+\node at (0.5, 3.5) {$L$};
+\node at (3.5, 3.5) {$B_{2,0}$};
+\node at (2.5, 1.5) {$L$};
+\end{tikzpicture}
+\end{center}
+
+\newcolumn
+\noindent Dove $L$ indica una pagina libera, $B$ indica il blocco di memoria e $i, j$ sono le \emph{variabili di stato}.
+\begin{itemize}
+\item $i$ = \emph{contatore del numero di transizioni che stanno utilizzando la pagina $B$}.
+\item $j \in \{0,1\}$ = bit che indica se la pagina \`e stata modificata ($1$) oppure no ($0$).
+\item Esempio: $B_{2,0}$ indica che ci sono due transizioni sulla pagina e che al momento non \`e stata scritta.
+\end{itemize}
+\end{multicols}
+
+\subsection{Primitive}
+
+\subsubsection{FIX}
+\defbox{\textbf{FIX}: viene usata dalle transazioni per richiedere l'accesso ad un blocco . Restituisce un puntatore alla pagina su cui tale blocco \`e caricato.
+}
+\begin{enumerate}
+\item  Il blocco viene ricercato tra le pagine del buffer.
+\begin{itemize}
+\item $\to$ Se \`e gi\`a presente viene restituito un puntatore alla pagina che lo contiene.
+\item $\to$ Se non esiste viene scelta una pagina $P$ libera su cui effettuare il caricamento.
+\begin{center}
+\begin{tikzpicture}
+\node at (4,5) {$P$ libera};
+\draw (3,4.5) rectangle (5,5.5);
+\draw[->] (3.5,4.5) -- (3, 3.75) node [below left] {$L$, pagina contrassegnata libera};
+\draw[->] (4, 4.5) -- (4, 3) node [below] {$B_{0,j}$, pagina con 0 accessi};
+\draw[->][blue] (4, 2.25) -- (4, 1.5) node [below] {\color{blue}LRU = sostituzione pagina usata meno di recente};
+\node at (4, 1) [below] {\color{blue}FIFO = sostituzione pagina pi\`u vecchia};
+\draw[->] (4.5,4.5) -- (5,3.75) node [below right] {$B_{i > 0, j}$, non esistono pagine libere};
+
+\end{tikzpicture}
+\end{center}
+\item $\to$ Se non ci sono pagine libere si applica uno dei due paradigmi: \textbf{STEAL}, che prevede di \emph{rubare} una pagina ad un'altra transazione, oppure \textbf{NOSTEAL}, ovvero la transazione corrente viene sospesa. 
+\end{itemize}
+\item Incrementa il contatore $i$.
+\end{enumerate}
+
+\subsubsection{SET DIRTY}
+\defbox{\textbf{SET DIRTY}: viene usata dalle transazioni per indicare al gestore del buffer che il blocco della pagina \`e stato modificato (bit di stato $j = 1$).}
+\subsubsection{UNFIX}
+\defbox{\textbf{UNFIX}: viene usata dalle trasnsazioni per indicare che la transazione ha terminato l'uso di un blocco (bit di stato $i = i - 1$).}
+\subsubsection{FLUSH}
+\defbox{\textbf{FLUSH}: viene usata dal \textbf{gestore del buffer} per salvare una pagina di memoria centrale in memoria secondaria in modo \textbf{asincrono}. (Bit di stato $j = 0$).}
+\subsubsection{FORCE}
+\defbox{\textbf{FORCE}: viene usata dal \textbf{gestore dell'affidabilit\`a} per effettuare scritture in modo \textbf{sincrono}. (Bit di stato $j = 0$).}
+
+\section{Gestore dell'affidabilit\`a}
+
+Il gestore dell'affidabilit\`a \`e il modulo che garantisce l'atomicit\`a delle transazioni e la persistenza dei dati. Il suo funzionamento si basa sull'utilizzo del \textbf{LOG}, un archivio persistente su cui vengono registrate tutte le operazioni eseguite dal DBMS. Per il suo funzionamento, il gestore dell'affidabilit\`a, deve disporre di un dispositivo di \textbf{memoria stabile}: una memoria resistente ai guasti.
+
+\subsection{Record di LOG}
+Nella memoria stabile viene memorizzato il file di LOG che registra in modo sequenziale le operazioni eseguite dalle transazioni sulla base di dati. In questo file vengono memorizzati i \textbf{record di transazione} e il \textbf{record di sistema}.
+
+\subsubsection{Record di transazione}
+
+I record di transazione sono:
+\begin{itemize}
+\item Inizio (begin) di una transazione t: \texttt{record B(t)};
+\item Commit di una transazione t: \texttt{record C(t)};
+\item Abort di una transazione t: \texttt{record A(t)};
+\item Insert, delete e update eseguiti dalla transazione t sull'oggetto O:
+\begin{itemize}
+	\item \texttt{record I(t,O, AS): AS = After State;}
+	\item \texttt{record D(t, O, BS): BS = Before State;}
+	\item \texttt{record U(t, O, BS, AS).}
+\end{itemize}
+\end{itemize}
+
+I record di transazione salvati nel LOG consentono di eseguire in caso di ripristino le seguenti operazioni:
+\begin{itemize}
+\item \textbf{UNDO}: per disfare un'azione su un oggetto O \`e sufficiente ricopiare in O il valore BS; l'insert/delete viene disfatto cancellando/inserendo O;
+\item \textbf{REDO}: per rifare un'azione su un oggetto O \`e sufficiente ricopiare in O il valore AS; l'insert/delete viene rifatto inserendo/cancellando O;
+\end{itemize}
+Gli inserimenti controllano sempre l'esistenza di O, non si inseriscono duplicati.
+
+\defbox{\paragraph{Propriet\`a di idempotenza:}
+\begin{center}
+\texttt{UNDO(UNDO(A)) = UNDO(A) \\
+REDO(REDO(A)) = REDO(A)
+}
+\end{center}
+}
+
+\subsubsection{Record di sistema}
+ 
+I record di sistema consistono in due operazioni: \textbf{DUMP} e \textbf{CHECKPOINT}.  Il DUMP consiste nell'eseguire una copia \textbf{completa e consistente} della base di dati. 
+
+L'operazione di CHECKPOINT (\texttt{record CK(T\textsubscript{1}, $\dots$, T\textsubscript{n})} indica che all'esecuzione del checkpoint le transazioni attive erano \texttt{T\textsubscript{1}, $\dots$,T\textsubscript{n}}. Sono elencate le transazioni che non hanno ancora espresso la loro scelta relativamente all'esito finale. L'operazione viene svolta periodicamente dal \textbf{gestore dell'affidabilit\`a} per garantire che gli effetti delle transazioni che hanno eseguito il commit siano registrati in modo permanente. 
+
+\defbox{\paragraph{Passi del CHECKPOINT}:
+\begin{enumerate}
+\item Sospende le operazioni in corso.
+\item Esegue la primitiva \texttt{FORCE} sulle pagine \emph{dirty} per tutte le transazioni che hanno eseguito il commit.
+\item Scrive il record (\texttt{CK(T\textsubscript{1}, $\dots$, T\textsubscript{n})}) di checkpoint sul LOG elencando gli identificatori delle transazioni attive.
+\item Riprende le operazioni.
+\end{enumerate}
+}
+
+\subsection{Regole di scrittura sul LOG}
+
+Esistono due regole per la scrittura sul LOG e l'esecuzione delle transazioni: \textbf{Write Ahead Log} e \textbf{commit-precedenza}. Tali regole consentono di salvare i blocchi delle pagine \emph{dirty} in modo totalmente asincrono rispetto al commit delle transazioni.
+
+\subsubsection{WAL - Write Ahead Log}
+I record di LOG devono essere scritti prima dell'esecuzione delle corrispondenti operazioni sulla base di dati, questo garantisce la possibilit\`a di fare sempre UNDO.
+
+\subsubsection{Commit-precedenza}
+I record di log devono essere scritti sul LOG prima dell'esecuzione del COMMIT della transazione, questo garantisce la possibilit\`a di fare sempre REDO.
+
+\examplebox{
+\textbf{Guasto prima}della scrittura record commit $\Rightarrow$ UNDO Atomicit\`a.
+\textbf{Guasto dopo} della scrittura record commit $\Rightarrow$ REDO Persistenza.
+}
+\subsection{Tipi di guasto}
+
+\begin{center}
+\begin{tikzpicture}
+\node at (5,10) {\textbf{Tipi di guasto}};
+\draw[->] (4.5, 9.75) -- (2, 9);
+\draw[->] (5.5,9.75) -- (8,9);
+
+% guasto di sistema
+\node at (2,9) [below] {Guasto di sistema};
+\draw[dashed] (2,8.5) -- (2, 7.5) node [below] {Perdita contenuto};
+\node at (2,6.9) {in memoria centrale};
+
+\draw[->](2,6.5) -- (2,5.5) node [below] {Ripresa a caldo};
+
+% guasto di dispositivo
+\node at (8,9) [below] {Guasto di dispositivo};
+\draw[dashed] (8,8.5) -- (8,7.5) node [below] {Perdita del contenuto};
+\node at (8,6.9)  {in memoria secondaria};
+
+\draw[->](8,6.5) -- (8,5.5) node[below]{Ripresa a freddo};
+\end{tikzpicture}
+\end{center}
+
+\subsubsection{FAIL-STOP}
+
+\begin{tikzpicture}
+\draw (0,5) rectangle (4,6);
+\node at (2, 5.75) {Funzionamento};
+\node at (2,5.25) {normale};
+
+\draw[->] (4,5.5) -- (7,5.5) node [right]{registra LOG};
+
+\draw[->] (3.5,5) -- (7.85,3.5);
+\draw (8.75,3.25) ellipse (1cm and 0.5cm);
+\node at (8.75, 3.25) {\small STOP};
+\draw[->] (9.5, 2.9) -- (9.5, 1.9);
+\draw[->][red] (8.5, 2) -- (8.5, 2.7);
+\node at (8.5, 2.2) [left][red] {\tiny FAIL};
+\draw (8.75, 1.5) ellipse (1.2cm and 0.5cm);
+\node at (8.75, 1.5) {\small RIPRISTINO};
+\draw[->] (7.5, 1.5) -- (2,5);
+\end{tikzpicture}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
